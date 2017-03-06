@@ -67,21 +67,13 @@ ENV PATH=$SPARK_HOME/bin:$PATH
 RUN \
   conda install --yes -c conda-forge gitpython=2.1.1
 
-#RUN \
-#  wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_1.12.6-0~ubuntu-trusty_amd64.deb \
-#  && dpkg -i docker-engine_1.12.6-0~ubuntu-trusty_amd64.deb \
-#  && apt-get -f install
-
+# This must match the version of Docker on the HOST machine that launces this Docker image.
+# In a Cloud-based Kubernetes environment, this is whatever version is burned into the image (ie. AMI on EC2)
+# We're currently using 293135079892/k8s-1.4-debian-jessie-amd64-hvm-ebs-2016-11-16 on AWS.
+# This is pinned to Docker 1.11
 RUN \
-#  curl -sSL https://get.docker.com/ | sh
   curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-1.11.2.tgz \
   && tar --strip-components=1 -xvzf docker-1.11.2.tgz -C /usr/local/bin
-
-#RUN \
-#  /usr/local/bin/dockerd
-
-RUN \
-  git clone http://github.com/fluxcapacitor/pipeline
 
 ENV \
   KUBERNETES_VERSION=1.5.1
@@ -93,13 +85,9 @@ RUN \
   sudo chmod a+x kubectl \
   && sudo mv kubectl /usr/local/bin/kubectl
 
-COPY .kube/ .kube/
-
-#COPY dags/ $AIRFLOW_HOME/dags/
 RUN \
   mkdir -p $AIRFLOW_HOME \
-  && cd $AIRFLOW_HOME \
-  && ln -s /root/pipeline/scheduler.ml/airflow/dags
+  && cd $AIRFLOW_HOME 
 
 # Hadoop
 ENV \
@@ -157,6 +145,17 @@ COPY config/airflow/airflow.cfg $AIRFLOW_HOME/airflow.cfg
 COPY github_webhook github_webhook
 
 COPY run run
+
+# Relying on PersistentVolume Mount through Kubernetes from https://github.com/fluxcapacitor/pipeline.git -> /root/pipeline
+# This could also be done with a Docker Volume mount with some creative scripting
+#RUN \
+#  git clone https://github.com/fluxcapacitor/pipeline
+
+RUN \
+  mkdir -p ~/.kube
+
+ENV \
+  PIPELINE_HOME=/root/pipeline/
 
 EXPOSE 8080 5000 5555 8793
 

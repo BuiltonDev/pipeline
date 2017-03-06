@@ -113,6 +113,10 @@ RUN \
 
 RUN \
   cd $TENSORFLOW_HOME \
+  && bazel build tensorflow/python/tools:strip_unused
+
+RUN \
+  cd $TENSORFLOW_HOME \
   && bazel build tensorflow/tools/graph_transforms:summarize_graph
 
 RUN \
@@ -298,7 +302,7 @@ RUN \
   pip install airflow==1.7.1.3
 
 ENV \
-  JMETER_VERSION=3.0.0
+  JMETER_VERSION=3.1
 
 RUN \
   wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz \
@@ -314,7 +318,7 @@ RUN \
   && ln -s ~/pipeline/education.ml/serving/config/airflow/airflow.cfg
 
 ENV \
-  JMETER_HOME=/root/apache-jmeter-3.0 \
+  JMETER_HOME=/root/apache-jmeter-${JMETER_VERSION} \
   NOTEBOOKS_HOME=$SOURCE_HOME/notebooks \
   LIB_HOME=/root/lib \
   TESTS_HOME=$SOURCE_HOME/tests \
