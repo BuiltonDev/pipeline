@@ -44,7 +44,7 @@ spec:
           name: dockersocket
         - name: git-volume
           gitRepo:
-            repository: "https://github.com/shareactorIO/dags.git"
+            repository: "https://github.com/shareactorIO/source.ml.git"
             revision: "master"
       nodeSelector:
         training: "true"
