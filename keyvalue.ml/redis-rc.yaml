@@ -29,7 +29,7 @@ spec:
       volumes:
         - name: pipeline-git-volume
           gitRepo:
-            repository: "https://github.com/fluxcapacitor/pipeline.git"
+            repository: "https://github.com/shareactorIO/pipeline.git"
             revision: "master"
       nodeSelector:
         training: "true"
