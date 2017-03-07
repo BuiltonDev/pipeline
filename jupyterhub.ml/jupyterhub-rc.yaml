@@ -33,7 +33,7 @@ spec:
       volumes:
         - name: source-git-volume
           gitRepo:
-            repository: "https://github.com/fluxcapacitor/source.ml.git"
+            repository: "https://github.com/shareactorIO/source.ml.git"
             revision: "master"
       nodeSelector:
         training: "true"
