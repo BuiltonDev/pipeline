@@ -188,16 +188,23 @@ RUN \
 
 #COPY lib/ lib/
 
-COPY run run
 COPY config/jupyterhub/ config/jupyterhub/
 COPY profiles/ /root/.ipython/
+
+#RUN \
+#  mkdir -p /root/config
+
+#RUN \
+#  mkdir -p /root/.ipython
 
 RUN \
   mkdir -p ~/.kube
 
-ENV \
-  PIPELINE_HOME=/root/pipeline/
+#ENV \
+#  SOURCE_HOME=/root/source.ml/
 
-EXPOSE 6006 8754
+EXPOSE 6006 8754 
+
+COPY run run 
 
 CMD ["supervise", "."]

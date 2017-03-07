@@ -142,7 +142,7 @@ ENV \
 COPY config/spark/ $SPARK_HOME/conf/
 COPY config/airflow/airflow.cfg $AIRFLOW_HOME/airflow.cfg 
 
-COPY github_webhook github_webhook
+#COPY github_webhook github_webhook
 
 COPY run run
 
@@ -154,8 +154,8 @@ COPY run run
 RUN \
   mkdir -p ~/.kube
 
-ENV \
-  PIPELINE_HOME=/root/pipeline/
+#ENV \
+#  SOURCE_ML_HOME=/root/source.ml
 
 EXPOSE 8080 5000 5555 8793
 
