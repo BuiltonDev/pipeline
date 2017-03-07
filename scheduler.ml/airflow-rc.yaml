@@ -35,7 +35,7 @@ spec:
           - name: dockersocket
             mountPath: /var/run/docker.sock
           - name: git-volume
-            mountPath: /root/volumes
+            mountPath: /root/airflow/dags
         securityContext:
           privileged: true
       volumes:
@@ -44,7 +44,7 @@ spec:
           name: dockersocket
         - name: git-volume
           gitRepo:
-            repository: "https://github.com/shareactorIO/source.ml.git"
+            repository: "https://github.com/shareactorIO/scheduler.ml/airflow/dags.git"
             revision: "master"
       nodeSelector:
         training: "true"
