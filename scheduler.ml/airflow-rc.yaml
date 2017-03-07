@@ -44,7 +44,7 @@ spec:
           name: dockersocket
         - name: git-volume
           gitRepo:
-            repository: "https://github.com/shareactorIO/scheduler.ml/airflow/dags.git"
+            repository: "https://github.com/shareactorIO/pipeline/tree/master/scheduler.ml/airflow/dags.git"
             revision: "master"
       nodeSelector:
         training: "true"
