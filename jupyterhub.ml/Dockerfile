@@ -50,14 +50,14 @@ ENV \
   TENSORFLOW_HOME=/root/tensorflow
 
 ENV \
- TENSORFLOW_VERSION=1.0.0
+ TENSORFLOW_VERSION=1.0.1
 
 RUN \
   git clone -b v$TENSORFLOW_VERSION https://github.com/tensorflow/tensorflow.git
 
 RUN \
   cd $TENSORFLOW_HOME \
-  && printf "\n\n\n\n\ny\n\n\n\n" | ./configure
+  && printf "\n\n\n\n\n\n\n\n\n" | ./configure
 
 RUN \
   cd $TENSORFLOW_HOME \
@@ -68,9 +68,9 @@ RUN \
   && bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
 
 # Utility for optimizing/simplifying models for inference
-#RUN \
-#  cd $TENSORFLOW_HOME \
-#  && bazel build tensorflow/python/tools:optimize_for_inference
+RUN \
+  cd $TENSORFLOW_HOME \
+  && bazel build tensorflow/python/tools:optimize_for_inference
 
 #RUN \
 #  pip install --ignore-installed --upgrade pip setuptools \
@@ -200,8 +200,11 @@ COPY profiles/ /root/.ipython/
 RUN \
   mkdir -p ~/.kube
 
-#ENV \
-#  SOURCE_HOME=/root/source.ml/
+#RUN \
+#  pip uninstall -y tensorflow
+
+#RUN \
+#  pip install tensorflow==1.0.1
 
 EXPOSE 6006 8754 
 
