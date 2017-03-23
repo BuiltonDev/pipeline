@@ -1,13 +1,12 @@
-build
-.kube
-.gradle
-.settings
 .cache-main
+.cache-tests
+.idea
 .classpath
-.gitignore
+.settings
 .project
 jmeter.log
 nohup.out
 __pycache__
 .DS_Store
 .cache-tests
+*.iml

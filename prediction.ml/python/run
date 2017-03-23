@@ -1,11 +1,10 @@
 #!/bin/bash
 
-if [ ! -f ~/store ]; then
-  cd ~ && ln -s /root/volumes/source.ml/prediction.ml/python/store
-fi
+#if [ ! -f ~/store ]; then
+#  cd ~ && ln -s /root/volumes/source.ml/prediction.ml/python/store
+#fi
 
-RUN \
-  cd store/python_balancescale \
+cd store/default/python_balancescale/1 \
   && python train_balancescale.py
 
 cd ~

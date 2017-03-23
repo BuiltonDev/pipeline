@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: zeppelin
-        image: docker.io/fluxcapacitor/zeppelin
+        image: docker.io/fluxcapacitor/zeppelin:master
         imagePullPolicy: "Always"
         env:
         - name: GET_HOSTS_FROM

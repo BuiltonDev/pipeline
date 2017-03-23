@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: cassandra 
+  name: cassandra
   labels:
     app: cassandra
 spec:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: cassandra
-        image: docker.io/fluxcapacitor/cassandra
+        image: docker.io/fluxcapacitor/cassandra:master
         imagePullPolicy: "Always"
         env:
         - name: GET_HOSTS_FROM
@@ -26,4 +26,4 @@ spec:
         - containerPort: 9160
         - containerPort: 7000
       nodeSelector:
-        training: "true" 
+        training: "true"

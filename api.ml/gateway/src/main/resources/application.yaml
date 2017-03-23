@@ -1,7 +1,0 @@
-zuul:
-  service:
-    name: ${spring.application.name}
-#  routes:
-#    canary:
-#      path: "/pmml/**"
-#      url: "http://prediction-pmml:9040"

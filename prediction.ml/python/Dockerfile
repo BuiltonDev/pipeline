@@ -1,4 +1,4 @@
-FROM fluxcapacitor/package-java-openjdk-1.8
+FROM fluxcapacitor/package-java-openjdk-1.8:master
 
 WORKDIR /root
 
@@ -28,7 +28,7 @@ RUN \
   && apt-get install -y python-qt4
 
 ENV \
-  TENSORFLOW_VERSION=1.0.0
+  TENSORFLOW_VERSION=1.0.1
 
 RUN \
   pip install --ignore-installed --upgrade pip setuptools \
@@ -46,11 +46,11 @@ COPY lib/ lib/
 RUN \
   sbt clean package
 
-#COPY store/ store/
+ENV \
+  STORE_HOME=/root/store
 
-#RUN \
-#  cd store/python_balancescale \
-#  && python train_balancescale.py
+RUN \
+  ln -s /root/volumes/source.ml/prediction.ml/python/store
 
 COPY run run
 

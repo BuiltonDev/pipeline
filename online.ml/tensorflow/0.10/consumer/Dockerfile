@@ -1,9 +1,9 @@
-FROM fluxcapacitor/package-kafka-0.10
+FROM fluxcapacitor/package-kafka-0.10:master
 
 WORKDIR /root
 
 ENV \
- TENSORFLOW_VERSION=1.0.0 \
+ TENSORFLOW_VERSION=1.0.1 \
  TENSORFLOW_SERVING_VERSION=0.5.1 \
  BAZEL_VERSION=0.4.4
 

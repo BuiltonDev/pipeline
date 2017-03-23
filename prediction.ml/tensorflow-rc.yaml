@@ -21,11 +21,11 @@ spec:
     spec:
       containers:
       - name: prediction-tensorflow
-        image: docker.io/fluxcapacitor/prediction-tensorflow
+        image: docker.io/fluxcapacitor/prediction-tensorflow:master
         imagePullPolicy: "Always"
         env:
         ports:
-        - containerPort: 5678 
+        - containerPort: 5678
         - containerPort: 6006
         - containerPort: 9000
         - containerPort: 9001
@@ -40,4 +40,4 @@ spec:
             repository: "https://github.com/fluxcapacitor/source.ml.git"
             revision: "master"
       nodeSelector:
-        prediction: "true" 
+        prediction: "true"

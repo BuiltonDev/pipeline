@@ -1,4 +1,4 @@
-FROM fluxcapacitor/package-spark-2.0.1
+FROM fluxcapacitor/package-spark-2.1.0:master
 
 # Based on the following:  https://github.com/jupyterhub/jupyterhub/blob/master/Dockerfile
 
@@ -12,7 +12,7 @@ RUN apt-get -y update && \
 # libav-tools for matplotlib anim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libav-tools && \
-    apt-get clean 
+    apt-get clean
 #    rm -rf /var/lib/apt/lists/*
 
 # Install JupyterHub dependencies
@@ -29,7 +29,7 @@ RUN wget -q https://repo.continuum.io/miniconda/Miniconda3-4.1.11-Linux-x86_64.s
     rm /tmp/miniconda.sh
 
 ENV \
-  PATH=/opt/conda/bin:$PATH 
+  PATH=/opt/conda/bin:$PATH
 
 RUN \
   conda install --yes openblas scikit-learn numpy scipy ipython jupyter matplotlib pandas seaborn
@@ -113,7 +113,7 @@ RUN \
   && conda install --yes -c conda-forge notebook=4.2.3 \
   && conda install --yes -c conda-forge findspark=1.0.0 \
   && conda install --yes -c conda-forge jupyter_contrib_nbextensions \
-  && conda install --yes -c anaconda-nb-extensions anaconda-nb-extensions 
+  && conda install --yes -c anaconda-nb-extensions anaconda-nb-extensions
 
 # Install non-secure dummyauthenticator for jupyterhub (dev purposes only)
 RUN \
@@ -134,80 +134,26 @@ RUN \
 RUN \
   mkdir -p /root/tensorboard
 
-ENV \
-  HADOOP_VERSION=2.7.2
-
-RUN \
- wget http://www.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
- && tar xvzf hadoop-${HADOOP_VERSION}.tar.gz \
- && rm hadoop-${HADOOP_VERSION}.tar.gz
-
-ENV \
-  HADOOP_HOME=/root/hadoop-${HADOOP_VERSION} \
-  HADOOP_OPTS=-Djava.net.preferIPv4Stack=true
-
-# This must be separate from the ${HADOOP_HOME} ENV definition or else Docker doesn't recognize it
-ENV \
-  HADOOP_CONF=${HADOOP_HOME}/etc/hadoop/ \
-  PATH=${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${PATH} 
-
 # Required by Tensorflow
 ENV \
   HADOOP_HDFS_HOME=${HADOOP_HOME}
-  
+
 # Required by Tensorflow for HDFS
 RUN \
   echo 'export CLASSPATH=$(${HADOOP_HDFS_HOME}/bin/hadoop classpath --glob)' >> /root/.bashrc
- 
+
 ENV \
   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${JAVA_HOME}/jre/lib/amd64/server
 
-# Required by Spark
-ENV \
-  HADOOP_CONF_DIR=${HADOOP_CONF}
-
-COPY config/hdfs/ conf/
-
-RUN \
-  mv ${HADOOP_CONF}/core-site.xml ${HADOOP_CONF}/core-site.xml.orig \
-  && cd ${HADOOP_CONF} \
-  && ln -s ~/conf/core-site.xml
-
-RUN \
-  mv ${HADOOP_CONF}/hdfs-site.xml ${HADOOP_CONF}/hdfs-site.xml.orig \
-  && cd ${HADOOP_CONF} \
-  && ln -s ~/conf/hdfs-site.xml
-
-# Relying on PersistentVolume Mount through Kubernetes from https://github.com/fluxcapacitor/pipeline.git -> /root/pipeline
-# This could also be done with a Docker Volume mount with some creative scripting
-#RUN \
-#  git clone https://github.com/fluxcapacitor/pipeline
-
-#RUN \
-#  ln -s /root/pipeline/jupyterhub.ml/notebooks
-
-#COPY lib/ lib/
+# lib & notesbooks provided via Kubernets PersistentVolume Mount
+# from https://github.wvrgroup.internal/omni-hub/source.ml -> /root/pipeline
+# .kube/config is volume mounted from Kubernetes secret
 
 COPY config/jupyterhub/ config/jupyterhub/
 COPY profiles/ /root/.ipython/
 
-#RUN \
-#  mkdir -p /root/config
+EXPOSE 6006 8754
 
-#RUN \
-#  mkdir -p /root/.ipython
-
-RUN \
-  mkdir -p ~/.kube
-
-#RUN \
-#  pip uninstall -y tensorflow
-
-#RUN \
-#  pip install tensorflow==1.0.1
-
-EXPOSE 6006 8754 
-
-COPY run run 
+COPY run run
 
 CMD ["supervise", "."]

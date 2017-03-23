@@ -1,4 +1,4 @@
-FROM fluxcapacitor/package-java-openjdk-1.8
+FROM fluxcapacitor/package-java-openjdk-1.8:master
 
 WORKDIR /root
 
@@ -32,6 +32,12 @@ RUN \
   mkdir -p /root/logs
 
 ENV LOGS_HOME=/root/logs
+
+ENV \
+  STORE_HOME=/root/store
+
+RUN \
+  ln -s /root/volumes/source.ml/prediction.ml/keyvalue/store
 
 COPY run run
 

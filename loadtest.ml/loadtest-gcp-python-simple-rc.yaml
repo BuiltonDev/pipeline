@@ -14,8 +14,8 @@ spec:
         name: loadtest-gcp-python-simple
     spec:
       containers:
-      - name: loadtest 
-        image: docker.io/fluxcapacitor/loadtest
+      - name: loadtest
+        image: docker.io/fluxcapacitor/loadtest:master
         imagePullPolicy: "Always"
         env:
         - name: TEST_PATHNAMES

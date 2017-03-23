@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: redis-master 
+  name: redis-master
   labels:
     app: redis-master
 spec:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: redis-master
-        image: docker.io/fluxcapacitor/keyvalue-redis
+        image: docker.io/fluxcapacitor/keyvalue-redis:master
         imagePullPolicy: "Always"
         env:
         - name: GET_HOSTS_FROM
