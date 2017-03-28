@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: airflow
-        image: eu.gcr.io/ds-platform-qa/scheduler-airflow:master
+        image: eu.gcr.io/ds-platform-qa/scheduler-airflow
         imagePullPolicy: "Always"
         env:
         - name: GET_HOSTS_FROM
@@ -24,6 +24,16 @@ spec:
           value: spark://spark-master-2-1-0:7077
         - name: SPARK_SUBMIT_ARGS
           value: "--conf spark.cores.max=2 --conf spark.executor.memory=2g --packages com.amazonaws:aws-java-sdk:1.7.4,org.apache.hadoop:hadoop-aws:2.7.1,org.apache.spark:spark-streaming-kafka-0-10_2.11:2.0.1 --jars /root/lib/jpmml-sparkml-package-1.0-SNAPSHOT.jar --py-files /root/lib/jpmml.py"
+        - name: GIT_USER
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: GIT_USER
+        - name: GIT_PASSWORD
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: GIT_PASSWORD
         ports:
         - containerPort: 8080
         - containerPort: 5000
@@ -45,8 +55,7 @@ spec:
           name: dockersocket
         - name: git-volume
           gitRepo:
-            repository: "https://github.com/shareactorIO/source.ml.git"
-#            repository:  "https://[o-auth-personal-acess-token]:x-oauth-basic@github.com/fluxcapacitor/source.ml.git"
+            repository: "https://[o-auth-personal-acess-token]:[x-oauth-basic]@github.com/shareactorIO/source.ml.git"
             revision: "master"
 #        - name: kube-config-secret-volume
 #          secret:
