@@ -3,7 +3,7 @@ FROM fluxcapacitor/package-spark-2.1.0:master
 WORKDIR /root
 
 ENV \
-  ZEPPELIN_VERSION=0.7.0-spark-2.0-scala-2.11-SNAPSHOT
+  ZEPPELIN_VERSION=0.8.0-spark-2.1-scala-2.11-SNAPSHOT
 
 ENV \
   ZEPPELIN_HOME=/root/zeppelin-${ZEPPELIN_VERSION}
@@ -13,13 +13,16 @@ RUN \
   && tar -xzvf zeppelin-$ZEPPELIN_VERSION.tar.gz \
   && rm zeppelin-$ZEPPELIN_VERSION.tar.gz
 
+#RUN \
+#  echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/apt/sources.list \
+#  && gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9 \
+#  && gpg -a --export E084DAB9 | apt-key add - \
+#  && apt-get update \
+#  && apt-get install -y r-base \
+#  && apt-get install -y r-base-dev
+
 RUN \
-  echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/apt/sources.list \
-  && gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9 \
-  && gpg -a --export E084DAB9 | apt-key add - \
-  && apt-get update \
-  && apt-get install -y r-base \
-  && apt-get install -y r-base-dev
+  pip install tensorflow==1.0.1
 
 ENV \
   KUBERNETES_VERSION=1.5.1
@@ -28,8 +31,8 @@ RUN \
   wget https://storage.googleapis.com/kubernetes-release/release/v$KUBERNETES_VERSION/bin/linux/amd64/kubectl
 
 RUN \
-  sudo chmod a+x kubectl \
-  && sudo mv kubectl /usr/local/bin/kubectl
+  chmod a+x kubectl \
+  && mv kubectl /usr/local/bin/kubectl
 
 # lib & notesbooks provided via Kubernets PersistentVolume Mount
 # from https://github.wvrgroup.internal/omni-hub/source.ml -> /root/pipeline
