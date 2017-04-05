@@ -93,7 +93,7 @@ ENV CUDA_PATH="/usr/local/cuda"
 ENV CUDA_TOOLKIT_PATH=$CUDA_PATH
 ENV CUDNN_INSTALL_PATH=$CUDA_PATH
 ENV CC_OPT_FLAGS="-march=native"
-ENV TF_CUDA_COMPUTE_CAPABILITIES=3.5,3.7
+ENV TF_CUDA_COMPUTE_CAPABILITIES=3.7
 # Check the required COMPUTE_CAPABILITIES from the following link:
 #  https://developer.nvidia.com/cuda-gpus
 # Also, Tensorflow has a minimum-supported COMPUTE CAPABILITY (ie. 3.5)
@@ -115,19 +115,22 @@ ENV \
   LANG=en_us.UTF-8
 
 RUN \
-  cd $TENSORFLOW_SERVING_HOME/tensorflow \
+  cd $TENSORFLOW_HOME \
   && printf "\n\n\n" | ./configure 
 
 RUN \  
   cd $TENSORFLOW_SERVING_HOME \
   && sed -i.bak 's/@org_tensorflow\/\/third_party\/gpus\/crosstool/@local_config_cuda\/\/crosstool:toolchain/g' tools/bazel.rc \
-  && sed -i.bak '/nccl/d' tensorflow/tensorflow/contrib/BUILD 
-
+  && sed -i.bak '/nccl/d' tensorflow/tensorflow/contrib/BUILD \
 # http://stackoverflow.com/questions/41293077/how-to-compile-tensorflow-with-sse4-2-and-avx-instructions
-#  && bazel build -c opt --config=cuda --spawn_strategy=standalone --genrule_strategy=standalone --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 -k //tensorflow_serving/... 
+  && bazel build -c opt --config=cuda --spawn_strategy=standalone --genrule_strategy=standalone --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 -k //tensorflow_serving/... 
 
 ENV \
   PATH=$TENSORFLOW_SERVING_HOME/bazel-bin/tensorflow_serving/model_servers/:$PATH
+
+# Configure the build for our CUDA configuration.
+ENV CI_BUILD_PYTHON python
+ENV TF_ENABLE_XLA=1
 
 # Need this inside Docker for nvidia-docker build step HACK
 ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
@@ -138,20 +141,47 @@ RUN \
 RUN \
   ldconfig /usr/local/cuda/lib64
 
-RUN \
+# This configuration was inspired by the following resources:
+#   http://ci.tensorflow.org/job/tensorflow-master-linux-xla/104/consoleText
+#   https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/ci_build
+#   tensorflow/tools/ci_build/xla/linux/gpu/run_py3.sh
+
+# Notes:  --local_test_jobs should be sync'd with the TF_GPU_COUNT
+#         Also, we may need to just call `bazel build`,
+#           since we may not be building on a GPU.
+#         The commit hash of the CI build above was bbe056e5a0ab81b67fcb6053400812b3d5805fc7,
+#           but we tested with 12a98726e769e988f6368a029ec2f5b0ac3ccbd4 
+#           (version used by this version of TF Serving) and things look OK.
+
+# TODO:  Make these dynamic based on build worker
+ENV TF_GPU_COUNT=1
+ENV N_JOBS=8
+#$(grep -c ^processor /proc/cpuinfo)
+
+ENV \
   TENSORFLOW_HOME=/root/tensorflow
 
 RUN \
-  git clone -b v1.1.0-rc0 --single-branch --recurse-submodules https://github.com/tensorflow/tensorflow.git 
+ git clone -b r1.1 --single-branch --recurse-submodules https://github.com/tensorflow/tensorflow.git \
+ && cd $TENSORFLOW_HOME \
+ && git reset --hard ef93e9a9059cd072bae28b49ba5cc33d9611f178 
 
-# Configure the build for our CUDA configuration.
-ENV CI_BUILD_PYTHON python
-ENV TF_ENABLE_XLA=1
-ENV TF_NEED_JEMALLOC=0 
 RUN \
   cd $TENSORFLOW_HOME \
-  && tensorflow/tools/ci_build/builds/configured GPU \
-  && bazel build -c opt --config=cuda --spawn_strategy=standalone --genrule_strategy=standalone --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 -k //tensorflow/...
+  && printf "\n\n\n" | ./configure
+
+RUN \
+  cd $TENSORFLOW_HOME \
+  && bazel build --config=cuda \
+    --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 \
+    --test_tag_filters=-no_gpu,-benchmark-test -k \
+    --jobs=${N_JOBS} \
+    --test_timeout 300,450,1200,3600 \
+#   --build_tests_only \
+    --test_output=errors \
+    --local_test_jobs=${TF_GPU_COUNT} \
+    --run_under=//tensorflow/tools/ci_build/gpu_build:parallel_gpu_execute -- \
+    //tensorflow/...
 
 RUN \
   cd $TENSORFLOW_HOME \
@@ -159,6 +189,10 @@ RUN \
 
 RUN \
   pip --no-cache-dir install --ignore-installed --upgrade /tmp/pip/tensorflow-*.whl
+
+RUN \
+  TF_CPP_MIN_LOG_LEVEL=0 \
+  TF_XLA_FLAGS=--xla_generate_hlo_graph=.*
 
 # Cleanup for nvidia-docker build step HACK
 RUN \
