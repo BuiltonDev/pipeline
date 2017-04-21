@@ -42,8 +42,7 @@ RUN \
   wget https://storage.googleapis.com/kubernetes-release/release/v$KUBERNETES_VERSION/bin/linux/amd64/kubectl
 
 RUN \
-  chmod a+x kubectl \
-  && mv kubectl /usr/local/bin/kubectl
+ chmod a+x kubectl && mv kubectl /usr/local/bin/kubectl
 
 RUN \
   mkdir -p $AIRFLOW_HOME \
@@ -52,7 +51,12 @@ RUN \
 RUN \
   pip install airflow==1.7.1.3 \
   && pip install celery[redis] \
-  && pip install flower
+  && pip install flower \ 
+  && pip install pymongo \ 
+  && pip install redis \ 
+  && pip install pandas \ 
+  && pip install cryptography \
+  && pip install flask_bcrypt
 
 RUN \
   pip install tensorflow==1.0.1
