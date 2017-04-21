@@ -54,7 +54,9 @@ RUN \
   && pip install flower \ 
   && pip install pymongo \ 
   && pip install redis \ 
-  && pip install pandas
+  && pip install pandas \ 
+  && pip install cryptography \
+  && pip install flask_bcrypt
 
 RUN \
   pip install tensorflow==1.0.1
