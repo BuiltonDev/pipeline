@@ -2,9 +2,25 @@ FROM fluxcapacitor/package-java-openjdk-1.8:master
 
 WORKDIR /root
 
-# Trigger once to download all sbt libs
 RUN \
-  sbt clean package 
+  echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list \
+  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 \
+  && apt-get update \
+  && apt-get install -y sbt
+
+RUN \
+  sbt clean clean-files
+
+RUN \
+  wget http://apache.mirrors.tds.net/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz \
+  && tar -xvzf apache-maven-3.3.9-bin.tar.gz \
+  && rm apache-maven-3.3.9-bin.tar.gz
+
+ENV \
+  MAVEN_HOME=/root/apache-maven-3.3.9/
+
+ENV \
+  PATH=$MAVEN_HOME/bin:$PATH
 
 # Install Python with conda
 RUN wget -q https://repo.continuum.io/miniconda/Miniconda3-4.1.11-Linux-x86_64.sh -O /tmp/miniconda.sh  && \
@@ -18,11 +34,12 @@ ENV \
   PATH=/opt/conda/bin:$PATH
 
 RUN \
-  conda install --yes openblas scikit-learn numpy scipy matplotlib pandas seaborn
+  conda install --yes openblas scikit-learn numpy scipy ipython jupyter matplotlib pandas
 
 RUN \
-  conda install cython
+  conda install --yes -c conda-forge py4j
 
+# Overcomes current limitation with conda matplotlib (1.5.1)
 RUN \
   apt-get update \
   && apt-get install -y python-qt4
@@ -34,6 +51,12 @@ RUN \
   pip install --ignore-installed --upgrade pip setuptools \
   && pip install --upgrade tensorflow==$TENSORFLOW_VERSION
 
+COPY lib/ lib/
+
+RUN \
+  cd ~/lib/jni \
+  && ln -s ~/lib/jni/libtensorflow_jni-cpu.so libtensorflow_jni.so
+
 RUN \
   mkdir -p /root/logs
 
@@ -41,10 +64,9 @@ ENV LOGS_HOME=/root/logs
 
 COPY src/ src/
 COPY build.sbt build.sbt
-COPY lib/ lib/
 
-RUN \
-  sbt clean package
+#RUN \
+#  sbt clean package
 
 ENV \
   STORE_HOME=/root/store
@@ -52,8 +74,13 @@ ENV \
 RUN \
   ln -s /root/volumes/source.ml/prediction.ml/python/store
 
+COPY scripts/ scripts/
+
+ENV \
+  PATH=/root/scripts:$PATH
+
 COPY run run
 
-EXPOSE 9040 
+EXPOSE 9040 9876 9000 8000
 
 CMD ["supervise", "."]

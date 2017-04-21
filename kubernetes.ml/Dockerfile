@@ -2,7 +2,7 @@ FROM fluxcapacitor/package-ubuntu-16.04:master
 
 WORKDIR /root
 
-ENV KUBERNETES_VERSION=1.5.1
+ENV KUBERNETES_VERSION=1.6.1
 ENV KUBERNETES_HOME=/root/kubernetes/
 
 RUN \
@@ -18,12 +18,15 @@ RUN \
   && mv kubectl /usr/local/bin/kubectl
 
 RUN \
+  echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+RUN \
   echo -en "\n" | $KUBERNETES_HOME/cluster/get-kube-binaries.sh
 
 ENV \
   PATH=$KUBERNETES_HOME/client/bin:$PATH
 
-ENV KOPS_VERSION=1.5.1
+ENV KOPS_VERSION=1.6.0-alpha.1
 ENV KOPS_HOME=/root/kops/
 
 RUN \
@@ -46,7 +49,7 @@ RUN \
   git clone https://github.com/kubernetes/heapster 
 
 ENV \
-  TERRAFORM_VERSION=0.8.2
+  TERRAFORM_VERSION=0.9.2
 
 RUN \
   wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
@@ -65,8 +68,14 @@ RUN \
 RUN \
   pip install --upgrade appdirs
 
+#ENV \
+#  CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+
 RUN \
-  pip install --upgrade google-cloud
+  echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+  && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+  && apt-get update \
+  && apt-get install -y google-cloud-sdk
 
 RUN \
   apt-get update && apt-get install -y libssl-dev libffi-dev python-dev build-essential \
