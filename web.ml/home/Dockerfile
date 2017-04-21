@@ -16,4 +16,4 @@ RUN \
 
 COPY run run
 
-CMD ["supervise", "."] 
+CMD ["supervise", "."]

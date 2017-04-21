@@ -3,7 +3,10 @@ kind: Service
 metadata:
   name: prediction-pmml
   labels:
+    app: prediction-pmml
     hystrix.enabled: "true"
+#  annotations:
+#    dns.alpha.kubernetes.io/external: prediction-pmml.your.domain.com
 spec:
   type: LoadBalancer
   ports:
@@ -11,5 +14,5 @@ spec:
     port: 80 
     targetPort: 9040 
   selector:
-    name: prediction-pmml
+    app: prediction-pmml
     hystrix.enabled: "true" 
