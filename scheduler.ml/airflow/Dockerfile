@@ -49,7 +49,8 @@ RUN \
   && cd $AIRFLOW_HOME
 
 RUN \
-  pip install airflow==1.7.1.3 \
+  pip install git+https://github.com/apache/incubator-airflow.git \
+	&& pip install google-api-python-client \
   && pip install celery[redis] \
   && pip install flower \ 
   && pip install pymongo \ 
