@@ -1,5 +1,7 @@
 FROM fluxcapacitor/package-spark-2.1.0:master
 
+WORKDIR /root
+
 # Based on the following:  https://github.com/jupyterhub/jupyterhub/blob/master/Dockerfile
 
 # install nodejs, utf8 locale
@@ -18,19 +20,14 @@ RUN apt-get update && \
 # Install JupyterHub dependencies
 RUN npm install -g configurable-http-proxy && rm -rf ~/.npm
 
-WORKDIR /root
-
-RUN \
-  conda install --yes seaborn
-
 RUN \
   conda install --yes -c conda-forge jupyterhub==0.7.2 \
   && conda install --yes ipykernel==4.6.0 \
   && conda install --yes notebook==5.0.0 \
-  && conda install --yes -c conda-forge jupyter_contrib_nbextensions \
-  && conda install --yes ipywidgets \
-  && conda install --yes -c anaconda-nb-extensions anaconda-nb-extensions \
-  && conda install --yes -c conda-forge findspark=1.0.0 
+  && conda install --yes -c conda-forge jupyter_contrib_nbextensions==0.2.7 \
+  && conda install --yes ipywidgets==6.0.0 \
+  && conda install --yes -c anaconda-nb-extensions anaconda-nb-extensions==1.0.0 \
+  && conda install --yes -c conda-forge findspark==1.0.0 
 
 RUN \
   pip install jupyterlab==0.19.0 \
@@ -44,10 +41,15 @@ RUN \
 
 # Install non-secure dummyauthenticator for jupyterhub (dev purposes only)
 RUN \
-  pip install jupyterhub-dummyauthenticator
+  pip install jupyterhub-dummyauthenticator==0.1
 
 RUN \
-  pip install jupyterhub-simplespawner
+  pip install jupyterhub-simplespawner==0.1
+
+RUN \
+  conda install --yes nbconvert==5.1.1 \
+  && conda install --yes graphviz==2.38.0 \
+  && conda install --yes seaborn==0.7.1
 
 ENV KUBERNETES_VERSION=1.6.1
 
@@ -63,6 +65,9 @@ RUN \
 
 RUN \
   mkdir -p /root/models
+
+RUN \
+  mkdir -p /root/logs
 
 # lib & notesbooks provided via Kubernets PersistentVolume Mount
 # from the github.com/fluxcapacitor/source.ml repo -> /root/pipeline
