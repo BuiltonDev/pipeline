@@ -13,9 +13,9 @@ spec:
   - name: airflow-webui
     port: 80
     targetPort: 8080 
-#  - name: github-webhook
-#    port: 5000
-#    targetPort: 5000
+  # - name: github-webhook
+    # port: 5000
+    # targetPort: 5000
   - name: celery-webui
     port: 5555
     targetPort: 5555
