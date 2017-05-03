@@ -49,14 +49,15 @@ RUN \
   && cd $AIRFLOW_HOME
 
 RUN \
-  pip install git+https://github.com/apache/incubator-airflow.git \
-  && pip install google-api-python-client \
-  && pip install celery[redis]==4.0.2 \
-  && pip install flower==0.9.1 \ 
-  && pip install pymongo \ 
+  pip install pymongo \
+  && pip install redis \ 
   && pip install pandas \ 
   && pip install cryptography \
-  && pip install flask_bcrypt
+  && pip install flask_bcrypt \
+  && pip install celery[redis]==4.0.2 \
+  && pip install flower==0.9.1 \ 
+  && pip install git+https://github.com/apache/incubator-airflow.git \ 
+  && pip install google-api-python-client
 
 
 RUN \
