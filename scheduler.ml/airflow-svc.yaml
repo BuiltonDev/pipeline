@@ -22,5 +22,6 @@ spec:
   # - name: airflow-logs
   #   port: 8793
   #   targetPort: 8793
+	#
   selector:
     app: scheduler-airflow 
