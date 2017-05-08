@@ -18,7 +18,7 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/prometheus"
-        prometheus.io/port: "9040"
+        prometheus.io/port: "8080"
     spec:
       containers:
       - name: prediction-tensorflow
@@ -44,6 +44,10 @@ spec:
         - containerPort: 9040
         - containerPort: 9876
         - containerPort: 9000
+<<<<<<< HEAD
+=======
+        - containerPort: 8080
+>>>>>>> fluxcapacitor/master
         volumeMounts:
           - name: git-volume
             mountPath: /root/volumes

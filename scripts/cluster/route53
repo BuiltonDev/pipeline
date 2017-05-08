@@ -28,6 +28,7 @@ kubectl annotate svc jupyterhub domainName=jupyter.$PIO_DOMAIN_NAME --overwrite
 kubectl label svc keyvalue-redis-master dns=route53 --overwrite
 kubectl annotate svc keyvalue-redis-master domainName=redis.$PIO_DOMAIN_NAME --overwrite
 
+<<<<<<< HEAD
 kubectl label svc prediction-java dns=route53 --overwrite
 kubectl annotate svc prediction-java domainName=prediction-java.$PIO_DOMAIN_NAME --overwrite
 
@@ -42,12 +43,23 @@ kubectl annotate svc prediction-python domainName=prediction-python.$PIO_DOMAIN_
 
 kubectl label svc prediction-spark dns=route53 --overwrite
 kubectl annotate svc prediction-spark domainName=prediction-spark.$PIO_DOMAIN_NAME --overwrite
+=======
+kubectl label svc prediction-jvm dns=route53 --overwrite
+kubectl annotate svc prediction-jvm domainName=prediction-jvm.$PIO_DOMAIN_NAME --overwrite
+
+kubectl label svc prediction-python3 dns=route53 --overwrite
+kubectl annotate svc prediction-python3 domainName=prediction-python3.$PIO_DOMAIN_NAME --overwrite
+>>>>>>> fluxcapacitor/master
 
 kubectl label svc prediction-tensorflow dns=route53 --overwrite
 kubectl annotate svc prediction-tensorflow domainName=prediction-tensorflow.$PIO_DOMAIN_NAME --overwrite
 
 kubectl label svc presto-ui dns=route53 --overwrite
+<<<<<<< HEAD
 kubectl annotate svc presto-ui domainName=presto.$PIO_DOMAIN_NAME --overwrite
+=======
+kubectl annotate svc presto-ui domainName=presto-ui.$PIO_DOMAIN_NAME --overwrite
+>>>>>>> fluxcapacitor/master
 
 kubectl label svc scheduler-airflow dns=route53 --overwrite
 kubectl annotate svc scheduler-airflow domainName=airflow.$PIO_DOMAIN_NAME --overwrite

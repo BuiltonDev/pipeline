@@ -16,5 +16,11 @@ spec:
   - name: grpc-tensorflow-serving
     port: 9000
     targetPort: 9000
+<<<<<<< HEAD
+=======
+  - name: prometheus
+    port: 8080
+    targetPort: 8080
+>>>>>>> fluxcapacitor/master
   selector:    
     app: prediction-python3

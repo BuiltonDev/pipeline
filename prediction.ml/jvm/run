@@ -1,4 +1,13 @@
 #!/bin/bash
 
+<<<<<<< HEAD
 cd ~
 java -Djava.security.egd=file:/dev/./urandom -jar lib/sbt-launch.jar "run-main io.pipeline.prediction.jvm.PredictionServiceMain"
+=======
+source sysutils/container-limits.sh
+
+export JAVA_MAX_MEM_RATIO=85
+export JAVA_OPTIONS="$(sysutils/jvm-limits.sh)"
+
+java $JAVA_OPTIONS -Djava.security.egd=file:/dev/./urandom -jar lib/sbt-launch.jar "run-main io.pipeline.prediction.jvm.PredictionServiceMain"
+>>>>>>> fluxcapacitor/master

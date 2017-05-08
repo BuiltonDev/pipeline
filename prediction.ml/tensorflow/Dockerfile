@@ -65,10 +65,20 @@ ENV \
   PIO_MODEL_SERVER_PORT=9876 
 
 ENV \
+<<<<<<< HEAD
   PIO_MODEL_TENSORFLOW_SERVING_PORT=9000
 
 ENV \
   PIO_MODEL_SERVER_PATH=src/main/python/model
+=======
+  PIO_MODEL_SERVER_PATH=src/main/python
+
+ENV \
+  PIO_MODEL_SERVER_PROMETHEUS_PORT=8080
+
+ENV \
+  PIO_MODEL_TENSORFLOW_SERVING_PORT=9000
+>>>>>>> fluxcapacitor/master
 
 ENV \
   PIO_MODEL_SERVER_REQUEST_BATCHING=true
@@ -89,6 +99,10 @@ RUN \
 RUN \
   create_model_server_environment_python3
 
+<<<<<<< HEAD
 EXPOSE 9876 9000 9040 
+=======
+EXPOSE 9876 9000 9040 8080
+>>>>>>> fluxcapacitor/master
 
 CMD ["supervise", "."]

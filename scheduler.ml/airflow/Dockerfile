@@ -49,6 +49,7 @@ RUN \
   && cd $AIRFLOW_HOME
 
 RUN \
+<<<<<<< HEAD
   pip install pymongo \
   && pip install redis \ 
   && pip install pandas \ 
@@ -59,6 +60,11 @@ RUN \
   && pip install git+https://github.com/apache/incubator-airflow.git \ 
   && pip install google-api-python-client
 
+=======
+  pip install airflow==1.8.0 \
+  && pip install celery[redis]==4.0.2 \
+  && pip install flower==0.9.1
+>>>>>>> fluxcapacitor/master
 
 RUN \
   pip install tensorflow==1.0.1

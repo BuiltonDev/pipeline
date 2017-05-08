@@ -19,11 +19,19 @@ spec:
         image: docker.io/fluxcapacitor/scheduler-airflow:master
         resources:
           limits:
+<<<<<<< HEAD
             cpu: 4000m
             memory: 4000Mi
           requests:
             cpu: 400m
             memory: 400Mi
+=======
+            cpu: 1000m
+            memory: 2000Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+>>>>>>> fluxcapacitor/master
         imagePullPolicy: "Always"
         env:
         - name: GET_HOSTS_FROM

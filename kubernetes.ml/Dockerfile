@@ -25,10 +25,8 @@ RUN \
   && rm kubernetes.tar.gz
 
 RUN \
-  wget https://storage.googleapis.com/kubernetes-release/release/v$KUBERNETES_VERSION/bin/linux/amd64/kubectl
-
-RUN \
-  chmod a+x kubectl \
+  wget https://storage.googleapis.com/kubernetes-release/release/v$KUBERNETES_VERSION/bin/linux/amd64/kubectl \
+  && chmod a+x kubectl \
   && mv kubectl /usr/local/bin/kubectl
 
 #RUN \
@@ -40,7 +38,7 @@ RUN \
 #ENV \
 #  PATH=$KUBERNETES_HOME/client/bin:$PATH
 
-ENV KOPS_VERSION=1.6.0-alpha.2
+ENV KOPS_VERSION=1.6.0-beta.1
 ENV KOPS_HOME=/root/kops/
 
 RUN \
@@ -112,7 +110,7 @@ RUN \
 #RUN \
 #  ln -s scripts /root/pipeline/kubernetes.ml/scripts
 
-COPY scripts/ scripts/
+COPY scripts scripts
 ENV \
   PATH=/root/scripts:$PATH
 
@@ -133,7 +131,11 @@ ENV \
 #  && mv funktion-linux-amd64 /usr/local/bin/funktion
 
 RUN \
+<<<<<<< HEAD
   pip install pio-cli==0.24
+=======
+  pip install pio-cli==0.35
+>>>>>>> fluxcapacitor/master
 
 # Intentionally keeping these at the bottom
 #RUN \
@@ -141,7 +143,10 @@ RUN \
 
 #RUN \
 #  cd source.ml && pull_force_overwrite_local
+<<<<<<< HEAD
 
 # TODO:  Remove this
 ENV \
   PYTHONWARNINGS="ignore:Unverified HTTPS request"
+=======
+>>>>>>> fluxcapacitor/master

@@ -76,9 +76,15 @@ RUN \
 # Clone Tensorflow Serving and the Tensorflow Submodule
 RUN \
  cd ~ \
+<<<<<<< HEAD
  && git clone -b master --single-branch --recurse-submodules https://github.com/tensorflow/serving.git \
  && cd $TENSORFLOW_SERVING_HOME \
  && git reset --hard 4d0a571ff9c15b937f58d3d5e97a5310b5decf2b
+=======
+ && git clone -b master --single-branch --recurse-submodules https://github.com/tensorflow/serving.git 
+# && cd $TENSORFLOW_SERVING_HOME \
+# && git reset --hard 4d0a571ff9c15b937f58d3d5e97a5310b5decf2b
+>>>>>>> fluxcapacitor/master
    # be83fe98104f26362dd2819d20b53ffac9b8f592
 
 ENV TF_NEED_CUDA=0
@@ -99,9 +105,15 @@ RUN \
 RUN \
   cd $TENSORFLOW_SERVING_HOME \
 # http://stackoverflow.com/questions/41293077/how-to-compile-tensorflow-with-sse4-2-and-avx-instructions
+<<<<<<< HEAD
 # Note:  removing --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 since the commondity AWS EC2 instance types (ie. r3.2xlarge) don't not support these optimizations
   && bazel build -c opt --spawn_strategy=standalone --genrule_strategy=standalone -k //tensorflow_serving/... \
   && rm -rf /root/.cache/bazel
+=======
+# Note:  removing --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 since the commodity AWS EC2 instance types (ie. r3.2xlarge) don't not support these optimizations
+  && bazel build --local_resources 5000,1.0,1.0 -c opt --spawn_strategy=standalone --genrule_strategy=standalone -k //tensorflow_serving/... 
+#  && bazel build -k //tensorflow_serving/...
+>>>>>>> fluxcapacitor/master
 
 ENV \
   PATH=$TENSORFLOW_SERVING_HOME/bazel-bin/tensorflow_serving/model_servers/:$PATH
@@ -122,8 +134,12 @@ RUN \
   cd $TENSORFLOW_HOME \
   && tensorflow/tools/ci_build/builds/configured CPU \
 # Note:  removing --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.1 --copt=-msse4.2 since the commondity AWS EC2 instance types (ie. r3.2xlarge) don't not support these optimizations
+<<<<<<< HEAD
   && bazel build -c opt --spawn_strategy=standalone --genrule_strategy=standalone -k //tensorflow/... \
   && rm -rf /root/.cache/bazel
+=======
+  && bazel build --local_resources 5000,1.0,1.0 -c opt --spawn_strategy=standalone --genrule_strategy=standalone -k //tensorflow/... 
+>>>>>>> fluxcapacitor/master
 
 RUN \
   cd $TENSORFLOW_HOME \
