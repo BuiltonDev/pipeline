@@ -69,5 +69,10 @@ spec:
            secretKeyRef:
             name: shareactor-secrets
             key: mongo_port
+        - name: GC_PROJECT
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: gc_project						
         ports:
         - containerPort: 6061
