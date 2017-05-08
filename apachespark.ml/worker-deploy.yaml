@@ -34,5 +34,40 @@ spec:
           value: 1g
         - name: SPARK_MASTER
           value: spark://apachespark-master-2-1-0:7077
+        - name: GIT_USERNAME
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: git_name
+        - name: GIT_PASSWORD
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: git_password
+        - name: MONGO_DB
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: mongo_db
+        - name: MONGO_USERNAME
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: mongo_username
+        - name: MONGO_PASSWORD
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: mongo_password                                     
+        - name: MONGO_HOST
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: mongo_host                                     
+        - name: MONGO_PORT
+          valueFrom:
+           secretKeyRef:
+            name: shareactor-secrets
+            key: mongo_port
         ports:
         - containerPort: 6061
